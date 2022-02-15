@@ -6,4 +6,8 @@
         <p>{{ object.body }}</p>
         <p>Post's id is {{ object.pk }}</p>
     </div>
+
+    <a href="{% url 'post_update' post.pk%}">+ Edit post</a>  <!-- object.pk can also be used in place of post.pk -->
+    <br>
+    <a href="{% url 'post_delete' post.pk%}">+ Delete blog post</a>
 {% endblock content %}
