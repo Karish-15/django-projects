@@ -20,4 +20,6 @@
         <li><strong>Copies available: </strong><font color="Black">{{ num_instances_available }}</font></li>
         <li><strong>Authors: </strong><font color="Black">{{ num_authors }}</font></li>
     </ul>
+
+    <p>You have visited this page {{num_visits}} time{{num_visits|pluralize}}.</p>
 {% endblock content %}
