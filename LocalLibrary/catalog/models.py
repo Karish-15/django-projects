@@ -30,7 +30,7 @@ class Book(models.Model):
         return self.title
     
     def get_absolute_url(self):
-        return reverse("book-detail", kwargs={"pk": self.pk})
+        return reverse("book_detail", kwargs={"pk": self.pk})
     
     def display_genre(self):
         return ', '.join([genre.name for genre in self.genre.all()[:3]])
@@ -72,7 +72,7 @@ class Author(models.Model):
         return self.name
     
     def get_absolute_url(self):
-        return reverse("author-detail", kwargs={"pk": self.pk})
+        return reverse("author_detail", kwargs={"pk": self.pk})
     
     
 

@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block title %}
+    <title>Local Library Records info</title>
+{% endblock title %}
+    
+{% block styles %}
+    <!-- {% load static %} -->
+    <!-- <link rel="stylesheet" href="{% static 'css/index.css' %}""> -->
+{% endblock styles %}
+
+{% block content %}
+    <h1>Local Library Home</h1>
+    <p>Welcome to LocalLibrary!</p>
+
+    <h3>Following are the record counts in the library:</h3>
+    <ul>
+        <li><strong>Books: </strong><font color="Black">{{ num_books }}</font></li>
+        <li><strong>Total Copies: </strong><font color="Black">{{ num_instances }}</font></li>
+        <li><strong>Copies available: </strong><font color="Black">{{ num_instances_available }}</font></li>
+        <li><strong>Authors: </strong><font color="Black">{{ num_authors }}</font></li>
+    </ul>
+{% endblock content %}
