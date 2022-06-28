@@ -1,5 +1,7 @@
 from django.db import models
 from django.urls import reverse
+from django.contrib.auth.models import User
+from datetime import date
 
 import uuid
 
@@ -43,6 +45,8 @@ class BookInstance(models.Model):
     due_back = models.DateField(null=True, blank=True)
     book = models.ForeignKey(Book, null=True, on_delete=models.RESTRICT)
     imprint = models.CharField(max_length=200)
+    borrower = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+    
     
     LOAN_STATUS = (
         ('m', 'Maintenance'),
@@ -59,6 +63,9 @@ class BookInstance(models.Model):
     def __str__(self) -> str:
         return f'{self.id} ({self.book.title})'
     
+    def is_overdue(self):
+        return bool(self.due_back and date.today()>self.due_back)
+    
     
 class Author(models.Model):
     name = models.CharField(max_length=200)
@@ -67,6 +74,9 @@ class Author(models.Model):
     
     class Meta:
         ordering = ['name']
+        permissions = (
+            ('can_mark_returned', 'Set book as returned'),
+        )
         
     def __str__(self):
         return self.name
