@@ -1,7 +1,14 @@
-from django.shortcuts import render
-from .models import Book, BookInstance, Author
+from django.shortcuts import render, get_object_or_404
+from django.http import HttpResponseRedirect
+from django.urls import reverse
 from django.views.generic import ListView, DetailView
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.contrib.auth.decorators import login_required, user_passes_test
+
+from .models import Book, BookInstance, Author
+from .forms import RenewBookForm
+
+import datetime
 
 # Create your views here.
 
@@ -23,6 +30,34 @@ def index(request):
     }
     
     return render(request, 'index.html', context=context)
+
+@login_required()
+@user_passes_test(lambda u: u.has_perm('catalog.can_mark_returned'))
+def renew_book_librarian(request, pk):
+    book_instance = get_object_or_404(BookInstance, pk = pk)
+    
+    if request.method == 'POST':
+        
+        form = RenewBookForm(request.POST)
+        if form.is_valid():
+            book_instance.due_back = form.cleaned_data['renewal_date']
+            book_instance.save()
+            
+            return HttpResponseRedirect(reverse('loaned_books_librarian'))
+    else:
+        proposed_renewal = datetime.date.today() + datetime.timedelta(weeks=3)
+        form = RenewBookForm(initial={'renewal_date': proposed_renewal})
+    
+    ## For when GET request or form is not valid.
+    context = {
+            'form': form,
+            'book_instance': book_instance, 
+        }
+        
+    return render(request, template_name= 'catalog/book_renew_librarian.html', context=context)
+
+
+# CBVs
 
 class BookListView(ListView):
     model = Book
