@@ -6,7 +6,8 @@
 
 {% block content %}
     <h1>Book List</h1>
-    
+    <strong>Add Book: </strong><a href="{% url 'author_create' %}"><i class="fas fa-plus" style="color: red;"></i></a>
+    <br>
     {% if  book_list %}
         <ul>
             {% for book in book_list %}

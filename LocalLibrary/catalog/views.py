@@ -1,12 +1,13 @@
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponseRedirect
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 from django.views.generic import ListView, DetailView
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.contrib.auth.decorators import login_required, user_passes_test
+from django.views.generic.edit import CreateView, UpdateView, DeleteView
 
 from .models import Book, BookInstance, Author
-from .forms import RenewBookForm
+from .forms import RenewBookModelForm
 
 import datetime
 
@@ -38,15 +39,15 @@ def renew_book_librarian(request, pk):
     
     if request.method == 'POST':
         
-        form = RenewBookForm(request.POST)
+        form = RenewBookModelForm(request.POST)
         if form.is_valid():
-            book_instance.due_back = form.cleaned_data['renewal_date']
+            book_instance.due_back = form.cleaned_data['due_back']
             book_instance.save()
             
             return HttpResponseRedirect(reverse('loaned_books_librarian'))
     else:
         proposed_renewal = datetime.date.today() + datetime.timedelta(weeks=3)
-        form = RenewBookForm(initial={'renewal_date': proposed_renewal})
+        form = RenewBookModelForm(initial={'due_back': proposed_renewal})
     
     ## For when GET request or form is not valid.
     context = {
@@ -96,4 +97,40 @@ class LoanedBooksLibrarianListView(PermissionRequiredMixin, LoginRequiredMixin, 
     
     def get_queryset(self):
         return BookInstance.objects.filter(status = 'o').order_by('due_back')
+    
+
+# Generic CBVs
+#Author
+class AuthorCreateView(CreateView, PermissionRequiredMixin):
+    permission_required = ['catalog.can_mark_returned']
+    model = Author
+    fields = ['name', 'date_of_birth', 'date_of_death']
+    
+class AuthorUpdateView(UpdateView, PermissionRequiredMixin):
+    permission_required = ['catalog.can_mark_returned']
+    model = Author
+    fields = '__all__'
+    
+class AuthorDeleteView(DeleteView, PermissionRequiredMixin):
+    permission_required = ['catalog.can_mark_returned']
+    model = Author
+    success_url = reverse_lazy('author_list')
+    
+#Book
+class BookCreateView(CreateView, PermissionRequiredMixin):
+    permission_required = ['catalog.can_mark_returned']
+    model = Book
+    fields = ['title', 'author', 'summary', 'summary', 'isbn', 'genre', 'lang']
+    
+class BookUpdateView(UpdateView, PermissionRequiredMixin):
+    permission_required = ['catalog.can_mark_returned']
+    model = Book
+    fields = ['title', 'author', 'summary', 'summary', 'isbn', 'genre', 'lang']
+    
+class BookDeleteView(DeleteView, PermissionRequiredMixin):
+    permission_required = ['catalog.can_mark_returned']
+    model = Book
+    success_url = reverse_lazy('book_list')
+
+
 

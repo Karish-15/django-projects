@@ -8,6 +8,13 @@
     {% else %}
     <p>{{author.date_of_birth}} -</p>
     {% endif %}
+
+    <div class="author_edit", style="position: relative; left: 20px;">
+        {% if 'catalog.can_mark_returned' in perms %}
+            Edit Author details <a href="{% url 'author_update' author.pk %}"><i class='fas fa-user-edit' style='color:red'></i></a><br>
+            Delete Author from database <a href="{% url 'author_delete' author.pk %}"><i class="fas fa-trash" style="color: red;"></i></a>
+        {% endif %}
+    </div>
     
     <div style="margin-left:20px;margin-top:20px">
         <h3>Books</h3>

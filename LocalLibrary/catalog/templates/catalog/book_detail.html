@@ -6,12 +6,20 @@
 
 {% block content %}
     <h1>Title: {{ book.title }}</h1>
-
+    <div class="book_edit", style="position: relative; left: 20px;">
+        {% if 'catalog.can_mark_returned' in perms %}
+            Edit Book details <a href="{% url 'book_update' book.pk %}"><i class='fas fa-edit' style='color:red'></i></a><br>
+            Delete Book from database <a href="{% url 'book_delete' book.pk %}"><i class="fas fa-trash" style="color: red;"></i></a>
+        {% endif %}
+    </div>
+    <br>
     <p><strong>Author:</strong> <a href='{{book.author.get_absolute_url}}'>{{ book.author }}</a></p> 
     <p><strong>Summary:</strong> {{ book.summary }}</p>
     <p><strong>ISBN:</strong> {{ book.isbn }}</p>
     <p><strong>Language:</strong> {{ book.language }}</p>
     <p><strong>Genre:</strong> {{ book.genre.all|join:", " }}</p>
+
+    
 
     <div style="margin-left:20px;margin-top:20px">
         <h4>Copies</h4>
