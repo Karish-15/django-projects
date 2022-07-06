@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <p>Are you sure you want to delete note?</p>
+    <table>
+        <form action="" method="post">
+            {% csrf_token %}
+            <input type="submit" value="Delete">
+            <a href="{%url 'index' %}">Cancel</a>
+        </form>
+    </table>
+{% endblock content %}

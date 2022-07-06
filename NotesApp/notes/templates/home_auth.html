@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h3>Your notes</h3>
+    <p>Create Note: <a href="{% url 'create'%}"><i class="fa-solid fa-file-circle-plus"></i></a></p>
+    <br>
+    <ul>
+        {% for note in notes_list %}
+            <li style="font-size: 25px;"><a href="{% url 'note_detail' note.id %}"><strong style="color: darkorchid; font-size: 25px;" >{{note.title}}</strong></a>  <i style="font-size: 15px;">(Last edited at {{note.last_edit}})</i></li>
+            <p style="background:lightblue">{{note.text}}</p>
+        {% endfor %}
+    </ul>
+
+{% endblock content %}
